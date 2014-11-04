@@ -4,7 +4,7 @@ import com.poker.annotation.HandRule;
 import com.poker.annotation.HandRule.Type;
 import com.poker.model.Hand;
 
-@HandRule(rank=2, type=Type.FULL_HOUSE)
+@HandRule(type=Type.FULL_HOUSE)
 public class FullHouseRule extends Rule
 {
     @Override

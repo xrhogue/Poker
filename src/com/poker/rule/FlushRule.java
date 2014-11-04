@@ -4,7 +4,7 @@ import com.poker.annotation.HandRule;
 import com.poker.annotation.HandRule.Type;
 import com.poker.model.Hand;
 
-@HandRule(rank=3, type=Type.FLUSH)
+@HandRule(type=Type.FLUSH)
 public class FlushRule extends Rule
 {
     @Override

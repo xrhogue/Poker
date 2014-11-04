@@ -4,7 +4,7 @@ import com.poker.annotation.HandRule;
 import com.poker.annotation.HandRule.Type;
 import com.poker.model.Hand;
 
-@HandRule(rank=1, type=Type.FOUR_OF_A_KIND)
+@HandRule(type=Type.FOUR_OF_A_KIND)
 public class FourOfAKindRule extends Rule
 {
     @Override

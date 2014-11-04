@@ -4,7 +4,7 @@ import com.poker.annotation.HandRule;
 import com.poker.annotation.HandRule.Type;
 import com.poker.model.Hand;
 
-@HandRule(rank=8, type=Type.HIGH_CARD)
+@HandRule(type=Type.HIGH_CARD)
 public class HighCardRule extends Rule
 {
     @Override

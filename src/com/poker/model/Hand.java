@@ -37,6 +37,32 @@ public class Hand implements Comparable<Hand>
     {
         return cards;
     }
+    
+    /**
+     * A variant hand that might involve an ace-low straight; if no ace is present, just return the normal cards
+     * @return the variant hand
+     */
+    public List<Card> getVariant()
+    {
+        List<Card>  cardVariants = new ArrayList<Card>();
+        
+        cardVariants.addAll(cards);
+        
+        for (Card card : cardVariants)
+        {
+            card.setUseVariant(true);
+        }
+        
+        Collections.sort(cardVariants);
+        Collections.reverse(cardVariants);
+        
+        for (Card card : cardVariants)
+        {
+            card.setUseVariant(false);
+        }        
+        
+        return cardVariants;
+    }
 
     public HandRule.Type getType()
     {

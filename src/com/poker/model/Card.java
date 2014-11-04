@@ -24,47 +24,42 @@ public class Card implements Comparable<Card>
         JACK(11),
         QUEEN(12),
         KING(13),
-        ACE(1,14);
+        ACE(14,1);
         
-        private Integer lowValue;
-        private Integer highValue;
+        private Integer variant = null;
+        private Integer rank;
         
-        private Value(final Integer value)
+        private Value(final Integer rank)
         {
-            this.lowValue = value;
-            this.highValue = value;
+            this.rank = rank;
         }
         
-        private Value(final Integer lowValue, final Integer highValue)
+        private Value(final Integer rank, final Integer variant)
         {
-            this.lowValue = lowValue;
-            this.highValue = highValue;
+            this.rank = rank;
+            this.variant = variant;
         }
         
-        public Boolean isMultiValued()
+        public Boolean hasVariant()
         {
-            return lowValue != highValue;
+            return variant != null;
         }
         
-        public Integer getValue()
+        public Integer getRank()
         {
-            return isMultiValued() ? -1 : lowValue;
+            return rank;
         }
         
-        public Integer getLowValue()
+        public Integer getVariant()
         {
-            return lowValue;
-        }
-        
-        public Integer getHighValue()
-        {
-            return highValue;
+            return variant;
         }
     }
     
     private Suit    suit;
     private Value   value;
-    private Boolean useSuitRanking = false;
+    private Boolean useSuitRanking = false; // TODO: implement if suits become important in the poker game beyond determining flush
+    private Boolean useVariant = false;
     
     public Card(final Suit suit, final Value value)
     {
@@ -82,14 +77,24 @@ public class Card implements Comparable<Card>
         return value;
     }
 
+    public Boolean useVariant()
+    {
+        return useVariant;
+    }
+
+    public void setUseVariant(Boolean useVariant)
+    {
+        this.useVariant = useVariant;
+    }
+
     @Override
     public int compareTo(Card card)
     {
-        if (this.value.getValue() > card.value.getValue())
+        if (getRank(this) > getRank(card))
         {
             return 1;
         }
-        else if (this.value.getValue() < card.value.getValue())
+        else if (getRank(this) < getRank(card))
         {
             return -1;
         }
@@ -103,5 +108,15 @@ public class Card implements Comparable<Card>
         }
         
         return 0;
+    }
+    
+    private Integer getRank(final Card card)
+    {
+        if (card.useVariant() && card.value.variant != null)
+        {
+            return card.value.variant;
+        }
+        
+        return card.value.rank;
     }
 }

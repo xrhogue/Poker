@@ -5,6 +5,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * The HandRule annotation is used to identify rules for matching hands, and comparing hands of the same type.
+ * The Type Enum is associated with each rule, and its ordinal also is used to determing ranking among the rules;
+ * higher ranked types are matched first, and the matching continues to the lower ranked types until successful.
+ * The last type is always the default.
+ * 
+ * @author rhogue
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface HandRule
@@ -22,6 +31,5 @@ public @interface HandRule
         STRAIGHT_FLUSH
     };
 
-    int rank();
     Type type();
 }

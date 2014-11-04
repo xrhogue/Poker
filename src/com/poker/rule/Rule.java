@@ -14,6 +14,11 @@ import com.poker.model.Hand;
 import com.poker.model.Card.Suit;
 import com.poker.model.Card.Value;
 
+/**
+ * The base abstract class for all rules. It encapsulates rank, type, match, and comparison helper methods
+ * @author rhogue
+ *
+ */
 public abstract class Rule
 {
     abstract public Boolean matches(final Hand hand);
@@ -21,7 +26,7 @@ public abstract class Rule
     
     public Integer getRank()
     {
-        return this.getClass().getAnnotation(HandRule.class).rank();
+        return this.getClass().getAnnotation(HandRule.class).type().ordinal();
     }
         
     public Type getType()
@@ -31,14 +36,19 @@ public abstract class Rule
     
     protected int compareHighToLow(final Hand hand1, final Hand hand2)
     {
-        for (int index = 0; index < hand1.getCards().size(); index++)
+        return compareHighToLow(hand1.getCards(), hand2.getCards());
+    }
+    
+    protected int compareHighToLow(final List<Card> cards1, final List<Card> cards2)
+    {
+        for (int index = 0; index < cards1.size(); index++)
         {
-            if (hand1.getCards().get(index).getValue().getValue() > hand2.getCards().get(index).getValue().getValue())
+            if (cards1.get(index).getValue().getRank() > cards2.get(index).getValue().getRank())
             {
                 return 1;
             }
             
-            if (hand1.getCards().get(index).getValue().getValue() < hand2.getCards().get(index).getValue().getValue())
+            if (cards1.get(index).getValue().getRank() < cards2.get(index).getValue().getRank())
             {
                 return -1;
             }
@@ -49,7 +59,7 @@ public abstract class Rule
     
     protected int compareMaxCountValue(final Hand hand1, final Hand hand2)
     {
-        return getMaxCountValue(hand1).compareTo(getMaxCountValue(hand1));
+        return getMaxCountValue(hand1).compareTo(getMaxCountValue(hand2));
     }
     
     protected int compareCountValues(final Hand hand1, final Hand hand2)
@@ -94,46 +104,7 @@ public abstract class Rule
     
     protected Boolean isStraight(final Hand hand)
     {
-        List<Card>  cards = hand.getCards();
-        Boolean     isStraight = true;
-        
-        for (int index = 0; index < cards.size() - 1; index++)
-        {
-            if (cards.get(index).getValue().getValue() != cards.get(index + 1).getValue().getValue() + 1)
-            {
-                isStraight = false;
-            }
-        }
-
-        // special case
-        if (!isStraight)
-        {
-            if (hand.hasAce())
-            {
-                cards = new ArrayList<Card>();
-                
-                for (int index = 1; index < hand.getCards().size(); index++)
-                {
-                    cards.add(hand.getCards().get(index));
-                }
-                
-                cards.add(hand.getCards().get(0));
-                
-                for (int index = 0; index < cards.size() - 1; index++)
-                {
-                    if (cards.get(index).getValue().getValue() != cards.get(index + 1).getValue().getValue() + 1)
-                    {
-                        return false;
-                    }
-                }
-            }
-            else
-            {
-                return isStraight;
-            }
-        }
-        
-        return true;
+        return checkStraightRanking(hand.getCards(), false) || checkStraightRanking(hand.getVariant(), true);
     }
     
     protected Boolean isThreeOfAKind(final Hand hand)
@@ -222,6 +193,29 @@ public abstract class Rule
         Collections.reverse(valueCounts);
         
         return valueCounts;
+    }
+    
+    private Boolean checkStraightRanking(final List<Card> cards, final Boolean useVariant)
+    {
+        for (int index = 0; index < cards.size() - 1; index++)
+        {
+            if (getRank(cards.get(index), useVariant) != getRank(cards.get(index + 1), useVariant) + 1)
+            {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    private Integer getRank(final Card card, final Boolean useVariant)
+    {
+        if (useVariant && card.getValue().getVariant() != null)
+        {
+            return card.getValue().getVariant();
+        }
+        
+        return card.getValue().getRank();
     }
     
     protected class ValueCount implements Comparable<ValueCount>

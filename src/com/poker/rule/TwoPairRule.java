@@ -4,7 +4,7 @@ import com.poker.annotation.HandRule;
 import com.poker.annotation.HandRule.Type;
 import com.poker.model.Hand;
 
-@HandRule(rank=6, type=Type.TWO_PAIR)
+@HandRule(type=Type.TWO_PAIR)
 public class TwoPairRule extends Rule
 {
     @Override
